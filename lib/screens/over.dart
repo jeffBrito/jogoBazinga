@@ -1,99 +1,196 @@
-import 'package:app/screens/home_page.dart';
-import 'package:app/screens/start_game.dart';
 import 'package:flutter/material.dart';
+import '../models/game_difficulty.dart';
+import '../theme/app_theme.dart';
+import '../widgets/bazinga_button.dart';
+import 'home_page.dart';
+import 'start_game.dart';
 
 class Over extends StatelessWidget {
-  const Over({super.key});
+  final GameDifficulty difficulty;
+  final int totalRounds;
+
+  const Over({
+    super.key,
+    this.difficulty = GameDifficulty.normal,
+    this.totalRounds = 5,
+  });
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.red,
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children:  [
-            const Text('',
-              style: TextStyle(
-                color: Colors.white,
-                fontWeight: FontWeight.w600,
-                fontSize: 40
-              ),
-            ),
-            const SizedBox(
-              height: 15,
-            ),
-            Image.asset(
-              'assets/images/gameover.png',
-              width: 208,
-              height: 208,
-              filterQuality: FilterQuality.high,
-            ),
-            const SizedBox(
-              height: 15,
-            ),
-            const Text('Que Pena foi perdeu o jogo !',
-              style: TextStyle(
-                color: Colors.white,
-                fontWeight: FontWeight.w600,
-                fontSize: 18
-              ),
-            ),
-            const SizedBox(
-              height: 150,
-            ),
-            SizedBox(
-              width: 200,
-              height: 40,
-              child: ElevatedButton(
-                onPressed: (){
-                  Navigator.push(
-                    context, 
-                    MaterialPageRoute(
-                      builder: (context) => StartGame()
-                    )
-                  );
-                }, 
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.green
-                ),
-                child: const Text('Continuar o Jogo',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 15
+      body: Container(
+        decoration: const BoxDecoration(
+          gradient: AppTheme.defeatGradient,
+        ),
+        child: SafeArea(
+          child: LayoutBuilder(
+            builder: (context, constraints) {
+              return SingleChildScrollView(
+                physics: const BouncingScrollPhysics(),
+                child: ConstrainedBox(
+                  constraints: BoxConstraints(minHeight: constraints.maxHeight),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        // Título e Imagem Game Over
+                        Column(
+                          children: [
+                            const SizedBox(height: 10),
+                            const Text(
+                              'BAZINGA!',
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                color: AppTheme.accentBazingaRed,
+                                fontWeight: FontWeight.w900,
+                                fontSize: 40,
+                                letterSpacing: 2,
+                                shadows: [
+                                  Shadow(
+                                    color: Colors.black54,
+                                    blurRadius: 12,
+                                    offset: Offset(0, 3),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            const SizedBox(height: 6),
+                            const Text(
+                              'O Sheldon Bot venceu a disputa!',
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                color: Colors.white70,
+                                fontWeight: FontWeight.w600,
+                                fontSize: 16,
+                              ),
+                            ),
+                            const SizedBox(height: 20),
+                            Container(
+                              constraints: BoxConstraints(
+                                maxHeight: (constraints.maxHeight * 0.28).clamp(130.0, 200.0),
+                              ),
+                              child: Image.asset(
+                                'assets/images/gameover.png',
+                                fit: BoxFit.contain,
+                                errorBuilder: (context, error, stackTrace) {
+                                  return const Icon(
+                                    Icons.sentiment_very_dissatisfied_rounded,
+                                    size: 100,
+                                    color: Colors.redAccent,
+                                  );
+                                },
+                              ),
+                            ),
+                          ],
+                        ),
+
+                        // Estatísticas e Humor Geek
+                        Container(
+                          margin: const EdgeInsets.symmetric(vertical: 20),
+                          padding: const EdgeInsets.all(16),
+                          decoration: BoxDecoration(
+                            color: Colors.white.withOpacity(0.08),
+                            borderRadius: BorderRadius.circular(20),
+                            border: Border.all(color: Colors.white.withOpacity(0.15)),
+                          ),
+                          child: Column(
+                            children: [
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                children: [
+                                  _buildStat('Dificuldade', difficulty.title, difficulty.color),
+                                  _buildStat('Rodadas', '$totalRounds', AppTheme.accentGold),
+                                  _buildStat('Vencedor', 'Sheldon (5 pts)', Colors.redAccent),
+                                ],
+                              ),
+                              const Divider(color: Colors.white24, height: 24),
+                              const Text(
+                                '"Você caiu em uma das minhas clássicas jogadas científicas! Treine mais seus neurônios antes de me desafiar novamente."',
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  color: Colors.white70,
+                                  fontStyle: FontStyle.italic,
+                                  fontSize: 12.5,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+
+                        // Botões de Ação
+                        Column(
+                          children: [
+                            BazingaButton(
+                              label: 'TENTAR NOVAMENTE',
+                              icon: Icons.replay_rounded,
+                              gradient: AppTheme.bazingaButtonGradient,
+                              height: 50,
+                              fontSize: 15,
+                              onPressed: () {
+                                Navigator.pushReplacement(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => StartGame(
+                                      initialDifficulty: difficulty,
+                                    ),
+                                  ),
+                                );
+                              },
+                            ),
+                            const SizedBox(height: 12),
+                            BazingaButton(
+                              label: 'MENU PRINCIPAL',
+                              icon: Icons.home_rounded,
+                              solidColor: Colors.white.withOpacity(0.15),
+                              height: 48,
+                              fontSize: 14,
+                              onPressed: () {
+                                Navigator.pushReplacement(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => const HomePage(),
+                                  ),
+                                );
+                              },
+                            ),
+                            const SizedBox(height: 10),
+                          ],
+                        ),
+                      ],
+                    ),
                   ),
                 ),
-              ),
-            ),
-            const SizedBox(
-              height: 25,
-            ),
-            SizedBox(
-              width: 200,
-              height: 40,
-              child: ElevatedButton(
-                onPressed: (){
-                  Navigator.push(
-                    context, 
-                    MaterialPageRoute(
-                      builder: (context) =>const HomePage()
-                    )
-                  );
-                }, 
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.amber
-                ),
-                child: const Text('Menu Principal',
-                  style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 15
-                  ),
-                )
-              ),
-            ),
-          ],
+              );
+            },
+          ),
         ),
       ),
+    );
+  }
+
+  Widget _buildStat(String title, String value, Color color) {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Text(
+          title,
+          style: const TextStyle(
+            color: Colors.white54,
+            fontSize: 11,
+          ),
+        ),
+        const SizedBox(height: 4),
+        Text(
+          value,
+          style: TextStyle(
+            color: color,
+            fontSize: 15,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+      ],
     );
   }
 }

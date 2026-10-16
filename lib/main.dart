@@ -1,25 +1,26 @@
-import 'package:app/screens/home_page.dart';
-import 'package:app/screens/over.dart';
-import 'package:app/screens/select_icon.dart';
-import 'package:app/screens/winner.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'screens/home_page.dart';
+import 'theme/app_theme.dart';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
+  SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitUp,
+    DeviceOrientation.portraitDown,
+  ]);
   runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'PPTLS',
+      title: 'Bazinga! - PPTLS',
       debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
+      theme: AppTheme.themeData,
       home: const HomePage(),
     );
   }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../theme/app_theme.dart';
 
 class SelectIcon extends StatelessWidget {
   const SelectIcon({super.key});
@@ -6,12 +7,11 @@ class SelectIcon extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color.fromARGB(255, 65, 58, 161),
+      backgroundColor: AppTheme.primaryDark,
       body: Center(
-        child: Column(
-          children: [
-            Image.asset('asset/images/logo.png'),
-          ],
+        child: Image.asset(
+          'assets/images/logo.png',
+          errorBuilder: (context, error, stackTrace) => const SizedBox.shrink(),
         ),
       ),
     );
